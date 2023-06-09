@@ -5,37 +5,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
-// @SpringBootApplication
-public class Application {
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class Application2 {
 
 	public static void main(String[] args) throws IOException {
 		// SpringApplication.run(Application.class, args);
 
-
-		// 파일에 있는 초기 data setting
-		File file = ResourceUtils.getFile(ResourceUtils.CLASSPATH_URL_PREFIX + "items.csv");
-
-		List<String[]> itemList = Files.lines(file.toPath())
-								.map(line -> line.split(","))
-								.toList();
-
-		Map<String, String[]> itemsMap = Files.lines(file.toPath())
-								.map(line -> line.split(","))
-								.collect(Collectors.toMap(p1 -> p1[0], p2 -> p2));
+		OrderService orderService = new OrderService();
+		StringBuffer stringBuffer = new StringBuffer();
 
 		// 콘솔 입력 (o or q)
 		while(true) {
@@ -46,12 +33,7 @@ public class Application {
 			// 콘솔 입력 validation 체크
 			// 콘솔 주문 상세 입력 (o or q)
 			if (stdin.equals("o") || stdin.equals("order")) {
-				for (int i = 0; i < itemList.size(); i++) {
-					for (int j = 0; j < itemList.get(i).length; j++) {
-						System.out.printf("%s     ", itemList.get(i)[j]);
-					}
-					System.out.println("");
-				}
+				orderService.printOrderAll();
 			} else if (stdin.equals("q") || stdin.equals("quit")) {
 				return;
 			}
@@ -84,12 +66,12 @@ public class Application {
 
 						Long orderSum = 0L;
 						for (int i = 0; i < itemNoList.size(); i++) {
-							String orderNo = itemsMap.get(itemNoList.get(i))[1];
-							Long orderAmount = Long.parseLong(itemsMap.get(itemNoList.get(i))[2]);
+							// String orderNo = itemsMap.get(itemNoList.get(i))[1];
+							// Long orderAmount = Long.parseLong(itemsMap.get(itemNoList.get(i))[2]);
 							Long orderQuantity = Long.parseLong(itemQuantityList.get(i));
-							orderSum += (orderAmount * orderQuantity);
-
-							System.out.printf("%s - %d개", orderNo, orderQuantity);
+							// orderSum += (orderAmount * orderQuantity);
+							//
+							// System.out.printf("%s - %d개", orderNo, orderQuantity);
 							System.out.println("");
 						}
 

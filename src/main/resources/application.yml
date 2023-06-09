@@ -1,0 +1,32 @@
+
+spring:
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testDB
+  jpa:
+    hibernate:
+      ddl-auto: create
+      properties:
+        hibernate:
+          default_batch_fetch_size: 1000
+          open-in-view: false
+    properties:
+      org:
+        hibernate:
+          envers:
+            audit_table_suffix: _history
+            store_data_at_delete: true   # Delete 될 때, 현재 상태를 함께 저장
+            revision_field_name: revision_id
+            revision_type_field_name: revision_type
+
+  profiles:
+    include: >
+      jwt
+
+logging:
+  level:
+    org.springframework.jdbc.core: trace
+    org.hibernate.SQL: debug    # Logger
+    org.hibernate.type: trace
