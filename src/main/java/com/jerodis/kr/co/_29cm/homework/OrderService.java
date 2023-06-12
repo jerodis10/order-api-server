@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
+import com.jerodis.kr.co._29cm.homework.exception.ItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.NumberUtils;
 import org.springframework.util.ResourceUtils;
@@ -18,50 +20,55 @@ import org.springframework.util.StringUtils;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
-	private final InputReader inputReader = new InputReader();
+	private final Printer printer;
+	private final InputReader inputReader;
+//	private final InputReader inputReader = new InputReader();
 
 	public List<Item> getItems() {
 		return orderRepository.findAllItem();
 	}
 
-	public Order requestOrder() {
+	public Order requestOrder() throws IOException {
 		Map<String, OrderDetail> orderMap = new ConcurrentHashMap<>();
 //		Order order = null;
 
-		try {
-			while (true) {
-				PrinterUtils.print("상품번호: ");
-				String itemNo = inputReader.read();
+		while (true) {
+//				PrinterUtils.print("상품번호: ");
+			printer.print("상품번호: ");
+			String itemNo = inputReader.read();
 
-				if (!StringUtils.hasText(itemNo)) break;
-				if(!Item.isNumeric(itemNo)) throw new RuntimeException();
-				Item savedItem = orderRepository.findOneItem(Long.valueOf(itemNo))
-						.orElseThrow(RuntimeException::new);
+			if (!StringUtils.hasText(itemNo)) break;
+			if(!Item.isNumeric(itemNo)) throw new InvalidCommandException("");
+			Item savedItem = orderRepository.findOneItem(Long.valueOf(itemNo))
+					.orElseThrow(() -> new ItemNotFoundException(""));
 
-				PrinterUtils.print("수량: ");
-				String InputQuantity = inputReader.read();
-				if(!Item.isNumeric(InputQuantity)) throw new RuntimeException();
-				Long itemQuantity = Long.valueOf(InputQuantity);
+//				PrinterUtils.print("수량: ");
+			printer.print("수량: ");
+			String InputQuantity = inputReader.read();
+			if(!Item.isNumeric(InputQuantity)) throw new InvalidCommandException("");
+			Long itemQuantity = Long.valueOf(InputQuantity);
 
-				Item item = Item.builder()
-						.itemNo(savedItem.getItemNo())
-						.itemName(savedItem.getItemName())
-						.price(savedItem.getPrice())
-						.quantity(itemQuantity)
-						.build();
+			Item item = Item.builder()
+					.itemNo(savedItem.getItemNo())
+					.itemName(savedItem.getItemName())
+					.price(savedItem.getPrice())
+					.quantity(savedItem.getQuantity())
+					.build();
 
-				if (orderMap.containsKey(itemNo)) {
-					Long originalItemQuantity = orderMap.get(itemNo).getItem().getQuantity();
-					orderMap.put(itemNo, new OrderDetail(item, originalItemQuantity + itemQuantity));
-				} else {
-					orderMap.put(itemNo, new OrderDetail(item, itemQuantity));
-				}
+			if (orderMap.containsKey(itemNo)) {
+				Long originalItemQuantity = orderMap.get(itemNo).getItem().getQuantity();
+				item.minusStock(originalItemQuantity + itemQuantity);
+				orderMap.put(itemNo, new OrderDetail(item));
+//					orderMap.put(itemNo, new OrderDetail(item, originalItemQuantity + itemQuantity));
+			} else {
+				item.minusStock(itemQuantity);
+				orderMap.put(itemNo, new OrderDetail(item));
+//					orderMap.put(itemNo, new OrderDetail(item, itemQuantity));
 			}
+		}
 
 //			order = new Order(new ArrayList<>(orderMap.values()));
 
-		} catch (IOException e) {
-		}
 
 		return new Order(new ArrayList<>(orderMap.values()));
 

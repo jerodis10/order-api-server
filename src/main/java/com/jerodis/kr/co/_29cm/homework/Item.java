@@ -1,5 +1,6 @@
 package com.jerodis.kr.co._29cm.homework;
 
+import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,30 @@ public class Item {
 
 	@NonNull
 	@Min(1)
-	private final Long quantity;
+	private Long quantity;
+
+
+	public void minusStock(Long quantity) {
+		this.quantity -= quantity;
+		if (this.quantity < 0) {
+			throw new SoldOutException("SoldOutException 발생. 상품량이 재고량보다 큽니다.");
+		}
+	}
+
+	public static boolean isNumeric(String s)
+	{
+		try {
+			Long.parseLong(s);
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s - %d개", itemName, quantity);
+	}
 
 //	public Item(Long itemNo, String itemName, Long price, Long quantity) {
 //		this.itemNo = itemNo;
@@ -34,36 +58,36 @@ public class Item {
 //		this.quantity = quantity;
 //	}
 
-	public static Map<String, Item> toMapItem(Map<String, String[]> paramMap) {
-		Map<String, Item> itemMap = new HashMap<>();
-
-		for (String key : paramMap.keySet()) {
-			if(!isNumeric(key)) continue;
-
-			String itemName = "";
-			int index = 0;
-
-			for (int i = 1; i < paramMap.get(key).length; i++) {
-				if (isNumeric(paramMap.get(key)[i])) {
-					index = i;
-					break;
-				} else {
-					itemName += paramMap.get(key)[i];
-				}
-			}
-
-			Item item = Item.builder()
-					.itemNo(Long.valueOf(paramMap.get(key)[0]))
-					.itemName(itemName)
-					.price(Long.valueOf(paramMap.get(key)[index].toString()))
-					.quantity(Long.valueOf(paramMap.get(key)[index + 1].toString()))
-					.build();
-
-			itemMap.put(paramMap.get(key)[0], item);
-		}
-
-		return itemMap;
-	}
+//	public static Map<String, Item> toMapItem(Map<String, String[]> paramMap) {
+//		Map<String, Item> itemMap = new HashMap<>();
+//
+//		for (String key : paramMap.keySet()) {
+//			if(!isNumeric(key)) continue;
+//
+//			String itemName = "";
+//			int index = 0;
+//
+//			for (int i = 1; i < paramMap.get(key).length; i++) {
+//				if (isNumeric(paramMap.get(key)[i])) {
+//					index = i;
+//					break;
+//				} else {
+//					itemName += paramMap.get(key)[i];
+//				}
+//			}
+//
+//			Item item = Item.builder()
+//					.itemNo(Long.valueOf(paramMap.get(key)[0]))
+//					.itemName(itemName)
+//					.price(Long.valueOf(paramMap.get(key)[index].toString()))
+//					.quantity(Long.valueOf(paramMap.get(key)[index + 1].toString()))
+//					.build();
+//
+//			itemMap.put(paramMap.get(key)[0], item);
+//		}
+//
+//		return itemMap;
+//	}
 	public static List<Item> toListItem(List<String[]> paramList) {
 		List<Item> itemList = new ArrayList<>();
 
@@ -92,19 +116,4 @@ public class Item {
 		return itemList;
 	}
 
-
-	public static boolean isNumeric(String s)
-	{
-		try {
-			Long.parseLong(s);
-		} catch (NumberFormatException ex) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("%s - %d개", itemName, quantity);
-	}
 }

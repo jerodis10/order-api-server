@@ -1,26 +1,37 @@
 package com.jerodis.kr.co._29cm.homework;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
+@Slf4j
 public class PrinterUtils {
     private static final String LINE_SEPARATOR = "-----------------------------------";
     private static final String PRINT_ITEM_FORMAT = "%-10s %-50s %-10s %s\n";
 
     public static void print(String s) {
+//        log.info("{}", s);
         System.out.print(s);
     }
 
     public static void println(String s) {
+//        log.info("{}", s);
         System.out.println(s);
     }
 
     public static void print(List<Item> itemList) {
+//        log.info("{}                    {}                             {}         {}",
+//                OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName,
+//                OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
+
         System.out.printf(PRINT_ITEM_FORMAT,
                 OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName, OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
 
         System.out.println("------------------------------------------------------------------------------------------");
 
         for (Item item : itemList) {
+//            log.info("{}     {}               {}         {}",
+//                    item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
             System.out.printf(PRINT_ITEM_FORMAT, item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
         }
     }
