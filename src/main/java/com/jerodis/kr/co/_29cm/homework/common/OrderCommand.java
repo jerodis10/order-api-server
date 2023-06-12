@@ -1,4 +1,4 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.common;
 
 //import com.example.demo.exception.InvalidCommandException;
 

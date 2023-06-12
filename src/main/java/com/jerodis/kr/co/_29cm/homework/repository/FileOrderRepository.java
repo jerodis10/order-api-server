@@ -1,7 +1,9 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.repository;
+
+import com.jerodis.kr.co._29cm.homework.common.FileReader;
+import com.jerodis.kr.co._29cm.homework.domain.Item;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -66,6 +68,7 @@ public class FileOrderRepository implements OrderRepository{
                     .itemName(itemName)
                     .price(Long.valueOf(line[index]))
                     .quantity(Long.valueOf(line[index + 1]))
+                    .stock(Long.valueOf(line[index + 1]))
                     .build();
 
         } catch (IOException e) {

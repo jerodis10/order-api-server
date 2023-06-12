@@ -1,19 +1,20 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.service;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
+import com.jerodis.kr.co._29cm.homework.common.InputReader;
+import com.jerodis.kr.co._29cm.homework.common.Printer;
+import com.jerodis.kr.co._29cm.homework.domain.Item;
+import com.jerodis.kr.co._29cm.homework.domain.Order;
+import com.jerodis.kr.co._29cm.homework.domain.OrderDetail;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
 import com.jerodis.kr.co._29cm.homework.exception.ItemNotFoundException;
+import com.jerodis.kr.co._29cm.homework.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.NumberUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 @RequiredArgsConstructor
@@ -38,26 +39,28 @@ public class OrderService {
 			String itemNo = inputReader.read();
 
 			if (!StringUtils.hasText(itemNo)) break;
-			if(!Item.isNumeric(itemNo)) throw new InvalidCommandException("");
+			if(!Item.isNumeric(itemNo)) throw new InvalidCommandException(itemNo + " - 입력한 상품번호가 적절하지 않습니다.");
 			Item savedItem = orderRepository.findOneItem(Long.valueOf(itemNo))
-					.orElseThrow(() -> new ItemNotFoundException(""));
+					.orElseThrow(() -> new ItemNotFoundException("해당 상품이 존재하지 않습니다."));
 
 //				PrinterUtils.print("수량: ");
 			printer.print("수량: ");
 			String InputQuantity = inputReader.read();
-			if(!Item.isNumeric(InputQuantity)) throw new InvalidCommandException("");
+			if(!Item.isNumeric(InputQuantity)) throw new InvalidCommandException(itemNo + " - 입력한 상품번호가 적절하지 않습니다.");
 			Long itemQuantity = Long.valueOf(InputQuantity);
 
 			Item item = Item.builder()
 					.itemNo(savedItem.getItemNo())
 					.itemName(savedItem.getItemName())
 					.price(savedItem.getPrice())
-					.quantity(savedItem.getQuantity())
+					.quantity(itemQuantity)
+					.stock(savedItem.getQuantity())
 					.build();
 
 			if (orderMap.containsKey(itemNo)) {
 				Long originalItemQuantity = orderMap.get(itemNo).getItem().getQuantity();
 				item.minusStock(originalItemQuantity + itemQuantity);
+				item.plusQuantity(originalItemQuantity);
 				orderMap.put(itemNo, new OrderDetail(item));
 //					orderMap.put(itemNo, new OrderDetail(item, originalItemQuantity + itemQuantity));
 			} else {

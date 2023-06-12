@@ -1,37 +1,40 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.common;
 
+import com.jerodis.kr.co._29cm.homework.domain.Item;
+import com.jerodis.kr.co._29cm.homework.domain.Order;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-public class SystemPrinter implements Printer {
-    private static final String PRINT_ITEM_FORMAT = "%-10s %-50s %-10s %s\n";
-
+@Slf4j
+public class LogPrinter implements Printer {
     @Override
     public void print(String s) {
-        System.out.print(s);
+        log.info("{}", s);
     }
 
     @Override
     public void println(String s) {
-        System.out.println(s);
+        log.info("{}", s);
     }
 
     @Override
     public void print(List<Item> itemList) {
-        System.out.printf(PRINT_ITEM_FORMAT,
-                OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName, OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
+        log.info("{}                    {}                             {}         {}",
+                OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName,
+                OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
 
         System.out.println("------------------------------------------------------------------------------------------");
 
         for (Item item : itemList) {
-            System.out.printf(PRINT_ITEM_FORMAT, item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
+            log.info("{}     {}               {}         {}",
+                    item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
         }
     }
 
     @Override
     public void initInput() {
-        System.out.printf("입력(%s[%s]: %s, %s[%s]: %s) : ",
+        log.info("입력({}[{}]: {}, {}[{}]: {}) : ",
             OrderCommand.ORDER.commandChar, OrderCommand.ORDER.commandString, OrderCommand.ORDER.commandWord,
             OrderCommand.QUIT.commandChar, OrderCommand.QUIT.commandString, OrderCommand.QUIT.commandWord);
     }
@@ -40,5 +43,4 @@ public class SystemPrinter implements Printer {
     public void print(Order order) {
         println(Printer.orderString(order));
     }
-
 }

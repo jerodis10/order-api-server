@@ -1,4 +1,8 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.common;
+
+import com.jerodis.kr.co._29cm.homework.domain.Item;
+import com.jerodis.kr.co._29cm.homework.domain.Order;
+import com.jerodis.kr.co._29cm.homework.domain.OrderDetail;
 
 import java.util.List;
 

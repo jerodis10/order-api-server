@@ -1,6 +1,5 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.domain;
 
-import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import lombok.Getter;
 
 @Getter

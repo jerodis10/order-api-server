@@ -1,4 +1,4 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.domain;
 
 import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import jakarta.validation.constraints.Min;
@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Builder
@@ -28,12 +26,19 @@ public class Item {
 	@Min(1)
 	private Long quantity;
 
+	@NonNull
+	@Min(1)
+	private Long stock;
+
 
 	public void minusStock(Long quantity) {
-		this.quantity -= quantity;
-		if (this.quantity < 0) {
+		if (this.stock - quantity < 0) {
 			throw new SoldOutException("SoldOutException 발생. 상품량이 재고량보다 큽니다.");
 		}
+	}
+
+	public void plusQuantity(Long quantity) {
+		this.quantity += quantity;
 	}
 
 	public static boolean isNumeric(String s)
@@ -108,6 +113,7 @@ public class Item {
 					.itemName(itemName)
 					.price(Long.valueOf(line[index]))
 					.quantity(Long.valueOf(line[index + 1]))
+					.stock(Long.valueOf(line[index + 1]))
 					.build();
 
 			itemList.add(item);

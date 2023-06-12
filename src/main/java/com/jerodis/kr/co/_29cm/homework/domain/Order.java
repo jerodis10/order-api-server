@@ -1,4 +1,4 @@
-package com.jerodis.kr.co._29cm.homework;
+package com.jerodis.kr.co._29cm.homework.domain;
 
 import lombok.Getter;
 
