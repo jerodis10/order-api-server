@@ -1,0 +1,110 @@
+package com.jerodis.kr.co._29cm.homework;
+
+import jakarta.validation.constraints.Min;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Getter
+@Builder
+public class Item {
+
+	@NonNull
+	private final Long itemNo;
+
+	@NonNull
+	private final String itemName;
+
+	@NonNull
+	private final Long price;
+
+	@NonNull
+	@Min(1)
+	private final Long quantity;
+
+//	public Item(Long itemNo, String itemName, Long price, Long quantity) {
+//		this.itemNo = itemNo;
+//		this.itemName = itemName;
+//		this.price = price;
+//		this.quantity = quantity;
+//	}
+
+	public static Map<String, Item> toMapItem(Map<String, String[]> paramMap) {
+		Map<String, Item> itemMap = new HashMap<>();
+
+		for (String key : paramMap.keySet()) {
+			if(!isNumeric(key)) continue;
+
+			String itemName = "";
+			int index = 0;
+
+			for (int i = 1; i < paramMap.get(key).length; i++) {
+				if (isNumeric(paramMap.get(key)[i])) {
+					index = i;
+					break;
+				} else {
+					itemName += paramMap.get(key)[i];
+				}
+			}
+
+			Item item = Item.builder()
+					.itemNo(Long.valueOf(paramMap.get(key)[0]))
+					.itemName(itemName)
+					.price(Long.valueOf(paramMap.get(key)[index].toString()))
+					.quantity(Long.valueOf(paramMap.get(key)[index + 1].toString()))
+					.build();
+
+			itemMap.put(paramMap.get(key)[0], item);
+		}
+
+		return itemMap;
+	}
+	public static List<Item> toListItem(List<String[]> paramList) {
+		List<Item> itemList = new ArrayList<>();
+
+		for (String[] line : paramList) {
+			int index = 0;
+			String itemName = "";
+			for (int i = 1; i < line.length; i++) {
+				if (isNumeric(line[i])) {
+					index = i;
+					break;
+				} else {
+					itemName += line[i];
+				}
+			}
+
+			Item item = Item.builder()
+					.itemNo(Long.valueOf(line[0]))
+					.itemName(itemName)
+					.price(Long.valueOf(line[index]))
+					.quantity(Long.valueOf(line[index + 1]))
+					.build();
+
+			itemList.add(item);
+		}
+
+		return itemList;
+	}
+
+
+	public static boolean isNumeric(String s)
+	{
+		try {
+			Long.parseLong(s);
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s - %d개", itemName, quantity);
+	}
+}
