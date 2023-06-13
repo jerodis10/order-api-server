@@ -11,10 +11,8 @@ public class Order {
     private static final Long BASIC_SHIPPING_FEE = 0L;
     private static final Long SHIPPING_FEE = 2_000L;
 
-    // 주문금액 숫자 포맷 적용
     private final Long orderAmount;
 
-    // 주문금액 숫자 포맷 적용
     private final Long payment;
 
     private final List<OrderDetail> orderDetails;
@@ -25,8 +23,8 @@ public class Order {
 
     public Order(List<OrderDetail> orderDetails) {
         this.orderDetails = List.copyOf(orderDetails);
-        this.orderAmount = getTotalAmount();
-        this.payment = getTotalAmount();
+        this.orderAmount = getTotalAmount() + getDeliveryFee();
+        this.payment = getTotalAmount() + getDeliveryFee();
     }
 
     public Long getTotalAmount() {

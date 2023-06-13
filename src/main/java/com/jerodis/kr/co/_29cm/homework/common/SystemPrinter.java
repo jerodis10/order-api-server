@@ -2,8 +2,12 @@ package com.jerodis.kr.co._29cm.homework.common;
 
 import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
+import com.jerodis.kr.co._29cm.homework.service.OrderColumn;
+import com.jerodis.kr.co._29cm.homework.service.OrderCommand;
 
 import java.util.List;
+
+import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.numberFormatter;
 
 public class SystemPrinter implements Printer {
     private static final String PRINT_ITEM_FORMAT = "%-10s %-50s %-10s %s\n";
@@ -26,7 +30,8 @@ public class SystemPrinter implements Printer {
         System.out.println("------------------------------------------------------------------------------------------");
 
         for (Item item : itemList) {
-            System.out.printf(PRINT_ITEM_FORMAT, item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
+            System.out.printf(PRINT_ITEM_FORMAT,
+                    item.getItemNo(), item.getItemName(), numberFormatter(item.getPrice()), numberFormatter(item.getQuantity()));
         }
     }
 
@@ -39,7 +44,7 @@ public class SystemPrinter implements Printer {
 
     @Override
     public void print(Order order) {
-        println(Printer.orderString(order));
+        println(Printer.orderDetailPrint(order));
     }
 
 }

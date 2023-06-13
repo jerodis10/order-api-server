@@ -2,6 +2,10 @@ package com.jerodis.kr.co._29cm.homework.repository;
 
 import com.jerodis.kr.co._29cm.homework.common.FileReader;
 import com.jerodis.kr.co._29cm.homework.domain.Item;
+import com.jerodis.kr.co._29cm.homework.exception.CommonException;
+import com.jerodis.kr.co._29cm.homework.exception.CommonExceptionStatus;
+import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
+import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandExceptionStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,20 +27,21 @@ public class FileOrderRepository implements OrderRepository{
             File file = fileReader.read();
 
             List<String[]> fileList = Files.lines(file.toPath())
-                    .skip(1)
+                    .skip(SKIP_ROWNUM)
                     .map(line -> line.split(","))
                     .toList();
 
             result = Item.toListItem(fileList);
 
         } catch (IOException e) {
+            throw new CommonException(CommonExceptionStatus.IO_EXCEPTION);
         }
 
         return result;
     }
 
     @Override
-    public Optional<Item> findOneItem(Long itemNo) {
+    public Optional<Item> findOneItem(String itemNo) {
         Item item = null;
 
         try {
@@ -44,47 +49,19 @@ public class FileOrderRepository implements OrderRepository{
             File file = fileReader.read();
 
             String[] line = Files.lines(file.toPath())
-                    .skip(1)
+                    .skip(SKIP_ROWNUM)
                     .map(m -> m.split(","))
-                    .filter(p -> p[0].equals(String.valueOf(itemNo)))
+                    .filter(p -> p[0].equals(itemNo))
                     .findAny()
-                    .orElseThrow(() -> new RuntimeException());
+                    .orElseThrow(() -> new InvalidCommandException(InvalidCommandExceptionStatus.ITEM_NOT_FOUND, itemNo));
 
-            String itemName = "";
-            int index = 0;
-
-            for (int i = 1; i < line.length; i++) {
-                if (isNumeric(line[i])) {
-                    index = i;
-                    break;
-                } else {
-                    itemName += line[i];
-                }
-            }
-
-
-            item = Item.builder()
-                    .itemNo(Long.valueOf(line[0]))
-                    .itemName(itemName)
-                    .price(Long.valueOf(line[index]))
-                    .quantity(Long.valueOf(line[index + 1]))
-                    .stock(Long.valueOf(line[index + 1]))
-                    .build();
+            item = Item.toItem(line);
 
         } catch (IOException e) {
-
+            throw new CommonException(CommonExceptionStatus.IO_EXCEPTION);
         }
 
         return Optional.ofNullable(item);
     }
 
-    private static boolean isNumeric(String s)
-    {
-        try {
-            Long.parseLong(s);
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-        return true;
-    }
 }

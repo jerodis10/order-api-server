@@ -15,7 +15,6 @@ public final class OrderDetail {
 
     public Long getAmount() {
         return item.getPrice() * item.getQuantity();
-//        return item.getPrice() * purchaseQuantity;
     }
 
 }

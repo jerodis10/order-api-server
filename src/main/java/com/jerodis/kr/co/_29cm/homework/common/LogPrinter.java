@@ -2,9 +2,13 @@ package com.jerodis.kr.co._29cm.homework.common;
 
 import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
+import com.jerodis.kr.co._29cm.homework.service.OrderColumn;
+import com.jerodis.kr.co._29cm.homework.service.OrderCommand;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+
+import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.numberFormatter;
 
 @Slf4j
 public class LogPrinter implements Printer {
@@ -28,7 +32,7 @@ public class LogPrinter implements Printer {
 
         for (Item item : itemList) {
             log.info("{}     {}               {}         {}",
-                    item.getItemNo(), item.getItemName(), item.getPrice(), item.getQuantity());
+                    item.getItemNo(), item.getItemName(), numberFormatter(item.getPrice()), numberFormatter(item.getQuantity()));
         }
     }
 
@@ -41,6 +45,6 @@ public class LogPrinter implements Printer {
 
     @Override
     public void print(Order order) {
-        println(Printer.orderString(order));
+        println(Printer.orderDetailPrint(order));
     }
 }

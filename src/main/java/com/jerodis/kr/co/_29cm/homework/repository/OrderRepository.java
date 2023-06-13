@@ -9,5 +9,5 @@ public interface OrderRepository {
 
     List<Item> findAllItem();
 
-    Optional<Item> findOneItem(Long itemNo);
+    Optional<Item> findOneItem(String itemNo);
 }
