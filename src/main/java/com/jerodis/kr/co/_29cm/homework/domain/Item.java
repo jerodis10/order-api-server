@@ -35,7 +35,7 @@ public class Item {
 
 	public void decreaseStock(Long quantity) {
 		this.stock -= quantity;
-		if (this.stock < 0) {
+		if (this.stock < 0L) {
 			throw new SoldOutException("SoldOutException 발생. 상품량이 재고량보다 큽니다.");
 		}
 	}

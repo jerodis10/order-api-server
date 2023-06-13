@@ -1,11 +1,5 @@
 package com.jerodis.kr.co._29cm.homework.service;
 
-import com.google.code.tempusfugit.concurrency.ConcurrentRule;
-import com.google.code.tempusfugit.concurrency.RepeatingRule;
-import com.google.code.tempusfugit.concurrency.annotations.Concurrent;
-import com.google.code.tempusfugit.concurrency.annotations.Repeating;
-import com.google.testing.threadtester.ThreadedBefore;
-import com.google.testing.threadtester.ThreadedMain;
 import com.jerodis.kr.co._29cm.homework.common.FileReader;
 import com.jerodis.kr.co._29cm.homework.common.InputReader;
 import com.jerodis.kr.co._29cm.homework.common.Printer;
@@ -17,9 +11,6 @@ import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
 import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import com.jerodis.kr.co._29cm.homework.repository.FileOrderRepository;
 import com.jerodis.kr.co._29cm.homework.repository.OrderRepository;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,8 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-//import org.testng.ITestContext;
-//import org.testng.annotations.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +41,7 @@ class OrderServiceTest {
     private final OrderRepository orderRepository = new FileOrderRepository();
     private final Printer printer = new SystemPrinter();
     private final InputReader inputReader = new InputReader();
-    private OrderService orderService = new OrderService(orderRepository, printer, inputReader);
+    private final OrderService orderService = new OrderService(orderRepository, printer, inputReader);
 
 
     @DisplayName("단일 상품, 단일 주문 요청 / 재고수량 이상 주문시 예외 발생")
@@ -107,19 +97,20 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderRepository.findOneItem("123")).isInstanceOf(InvalidCommandException.class);
     }
 
-    @DisplayName("멀티쓰레드 요청 시 상품 재고 부족시 예외 발생")
+    @DisplayName("멀티쓰레드 요청, 상품 재고 부족시 예외 발생")
     @Test
     void throwException_whenNotEnoughStock_withMultiThread() throws InterruptedException {
         // given
-        int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        int threadCount = 200;
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        AtomicInteger exceptionCounter = new AtomicInteger(0);
         CountDownLatch latch = new CountDownLatch(threadCount);
         Map<String, OrderDetail> orderMap = new ConcurrentHashMap<>();
 
         String inputItemNo = "1";
         Long price = 100_000L;
         Long inputItemQuantity = 1L;
-        Long baseStock = 50L;
+        Long baseStock = 100L;
         Long sumQuantity = inputItemQuantity * threadCount;
         Item item = Item.builder()
                 .itemNo(Long.valueOf(inputItemNo))
@@ -132,19 +123,20 @@ class OrderServiceTest {
         // when
         for (int i = 0; i < threadCount; i++) {
             executorService.submit(() -> {
-                        try {
-                            orderService.orderProcess(item, inputItemNo, inputItemQuantity, orderMap);
-                        } finally {
-                            latch.countDown();
-                        }
+                    try {
+                        orderService.orderProcess(item, inputItemNo, inputItemQuantity, orderMap);
+                    } catch (SoldOutException e) {
+                        exceptionCounter.incrementAndGet();
+                    } finally {
+                        latch.countDown();
                     }
+                }
             );
         }
         latch.await();
 
         // then
-        assertThat(orderMap.get(inputItemNo).getItem().getQuantity()).isEqualTo(sumQuantity);
-        assertThat(orderMap.get(inputItemNo).getItem().getStock()).isEqualTo(baseStock - sumQuantity);
+        assertThat(exceptionCounter.get()).isEqualTo(threadCount - baseStock);
     }
 
     @DisplayName("단일 상품, 단일 주문 요청")
@@ -440,101 +432,4 @@ class OrderServiceTest {
         assertThat(orderMap.get(inputItemNo).getItem().getStock()).isEqualTo(baseStock - sumQuantity);
     }
 
-
-    @Rule
-    public ConcurrentRule concurrently = new ConcurrentRule();
-    @Rule
-    public RepeatingRule rule = new RepeatingRule();
-    static Map<String, OrderDetail> orderMap = new ConcurrentHashMap<>();
-
-    @Test
-    @Concurrent(count = 10)
-    @Repeating(repetition = 10)
-    public void runsMultipleTimes() {
-
-        String inputItemNo = "1";
-        Long price = 100_000L;
-        Long inputItemQuantity = 1L;
-        Long baseStock = 100L;
-        Long sumQuantity = inputItemQuantity * 100;
-        Item item = Item.builder()
-                .itemNo(Long.valueOf(inputItemNo))
-                .itemName("pants")
-                .price(price)
-                .quantity(inputItemQuantity)
-                .stock(baseStock)
-                .build();
-
-        orderService.orderProcess(item, inputItemNo, inputItemQuantity, orderMap);
-    }
-
-//    @BeforeClass
-//    public void be() {
-//
-//    }
-
-    @AfterClass
-    public static void annotatedTestRunsMultipleTimes() throws InterruptedException {
-
-//        System.out.println("a");
-        assertThat(orderMap.get("1").getItem().getQuantity()).isEqualTo(10L);
-//        assertThat(orderMap.get("1").getItem().getStock()).isEqualTo(0L);
-    }
-
-
-//    @ThreadedBefore
-//    public void before() {
-//        orderService = new OrderService(orderRepository, printer, inputReader);
-//    }
-//
-//    @ThreadedMain
-//    public void mainThread() {
-//        // given
-//        int threadCount = 100;
-//        ExecutorService executorService = Executors.newFixedThreadPool(32);
-//        CountDownLatch latch = new CountDownLatch(threadCount);
-//        Map<String, OrderDetail> orderMap = new ConcurrentHashMap<>();
-//
-//        String inputItemNo = "1";
-//        Long price = 100_000L;
-//        Long inputItemQuantity = 1L;
-//        Long baseStock = 100L;
-//        Long sumQuantity = inputItemQuantity * threadCount;
-//        Item item = Item.builder()
-//                .itemNo(Long.valueOf(inputItemNo))
-//                .itemName("pants")
-//                .price(price)
-//                .quantity(inputItemQuantity)
-//                .stock(baseStock)
-//                .build();
-//
-//        orderService.orderProcess(item, inputItemNo, inputItemQuantity, orderMap);
-//    }
-//
-//    @DisplayName("멀티쓰레드 요청 시 상품 재고 이동 테스트2")
-//    @Test
-//    void success_whenNotEnoughStock_withMultiThread2() throws InterruptedException {
-//        // when
-//        for (int i = 0; i < threadCount; i++) {
-//            executorService.submit(() -> {
-//                        try {
-//                            orderService.orderProcess(item, inputItemNo, inputItemQuantity, orderMap);
-//                        } finally {
-//                            latch.countDown();
-//                        }
-//                    }
-//            );
-//        }
-//        latch.await();
-//
-//        // then
-//        assertThat(orderMap.get(inputItemNo).getItem().getQuantity()).isEqualTo(sumQuantity);
-//        assertThat(orderMap.get(inputItemNo).getItem().getStock()).isEqualTo(baseStock - sumQuantity);
-//    }
-    
 }
-
-
-// https://www.baeldung.com/java-testing-multithreaded
-// https://www.cyberithub.com/how-to-write-junit-test-cases-for-threads-in-java/
-// https://github.com/tobyweston/tempus-fugit/blob/master/src/test/java/com/google/code/tempusfugit/concurrency/RepeatingRuleTest.java
