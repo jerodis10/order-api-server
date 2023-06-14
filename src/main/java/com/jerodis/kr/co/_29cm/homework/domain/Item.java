@@ -2,9 +2,7 @@ package com.jerodis.kr.co._29cm.homework.domain;
 
 import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import jakarta.validation.constraints.Min;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +10,7 @@ import java.util.List;
 import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.isNumeric;
 
 @Getter
-@Builder
+//@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Item {
 
 	@NonNull
@@ -22,16 +20,26 @@ public class Item {
 	private final String itemName;
 
 	@NonNull
+//	@Min(0)
 	private final Long price;
 
 	@NonNull
-	@Min(1)
+//	@Min(1)
 	private Long quantity;
 
 	@NonNull
-	@Min(1)
+//	@Min(0)
 	private Long stock;
 
+
+	@Builder
+	public Item(Long itemNo, String itemName, Long price, Long quantity, Long stock) {
+		this.itemNo = itemNo;
+		this.itemName = itemName;
+		this.price = price;
+		this.quantity = quantity;
+		this.stock = stock;
+	}
 
 	public void decreaseStock(Long quantity) {
 		this.stock -= quantity;

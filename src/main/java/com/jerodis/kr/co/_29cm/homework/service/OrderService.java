@@ -9,6 +9,8 @@ import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandExceptionStatus;
 import com.jerodis.kr.co._29cm.homework.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+//@Validated
 @RequiredArgsConstructor
 public class OrderService {
 
@@ -29,7 +32,6 @@ public class OrderService {
 
 	public Order requestOrder() {
 		Map<String, OrderDetail> orderMap = new HashMap<>();
-//		Map<String, OrderDetail> orderMap = new ConcurrentHashMap<>();
 
 		while (true) {
 			printer.print("상품번호: ");
@@ -57,13 +59,11 @@ public class OrderService {
 		return new Order(new ArrayList<>(orderMap.values()));
 	}
 
-	public synchronized void orderProcess(Item item, String inputItemNo, Long itemQuantity, Map<String, OrderDetail> orderMap) {
+	@Synchronized
+	private void orderProcess(Item item, String inputItemNo, Long itemQuantity, Map<String, OrderDetail> orderMap) {
 		if (orderMap.containsKey(inputItemNo)) {
-//			Long originalItemQuantity = orderMap.get(inputItemNo).getItem().getQuantity();
 			item.decreaseStock(itemQuantity);
-//			item.decreaseStock(originalItemQuantity + itemQuantity);
 			item.increaseQuantity(itemQuantity);
-//			item.increaseQuantity(originalItemQuantity);
 			orderMap.put(inputItemNo, new OrderDetail(item));
 		} else {
 			item.decreaseStock(itemQuantity);

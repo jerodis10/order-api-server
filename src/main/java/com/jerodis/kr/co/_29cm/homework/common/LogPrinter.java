@@ -28,7 +28,8 @@ public class LogPrinter implements Printer {
                 OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName,
                 OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
 
-        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println(LONG_LINE_SEPARATOR);
+//        System.out.println("------------------------------------------------------------------------------------------");
 
         for (Item item : itemList) {
             log.info("{}     {}               {}         {}",

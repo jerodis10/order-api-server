@@ -23,8 +23,10 @@ public enum OrderCommand {
     }
 
     public static OrderCommand of(String s) {
-        if (s.equals("o")) return ORDER;
-        if (s.equals("q")) return QUIT;
+        if (OrderCommand.ORDER.commandChar.equals(s)) return ORDER;
+        if (OrderCommand.QUIT.commandChar.equals(s)) return QUIT;
+//        if (s.equals("o")) return ORDER;
+//        if (s.equals("q")) return QUIT;
         throw new InvalidCommandException(InvalidCommandExceptionStatus.INVALID_COMMAND, s);
     }
 

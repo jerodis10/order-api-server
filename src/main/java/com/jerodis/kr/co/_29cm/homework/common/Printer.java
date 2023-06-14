@@ -10,6 +10,7 @@ import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.numberFormatter
 
 public interface Printer {
     static final String LINE_SEPARATOR = "-----------------------------------";
+    static final String LONG_LINE_SEPARATOR = "------------------------------------------------------------------------------------------";
 
     void print(String s);
 

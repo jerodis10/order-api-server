@@ -1,21 +1,25 @@
 package com.jerodis.kr.co._29cm.homework.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 //@Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
     private static final Long MINIMUM_SHIPPING_FEE = 50_000L;
     private static final Long BASIC_SHIPPING_FEE = 0L;
     private static final Long SHIPPING_FEE = 2_000L;
 
-    private final Long orderAmount;
+    private Long orderAmount;
 
-    private final Long payment;
+    private Long payment;
 
-    private final List<OrderDetail> orderDetails;
+    private List<OrderDetail> orderDetails;
 
     public List<OrderDetail> getOrderDetails() {
         return List.copyOf(orderDetails);
@@ -26,6 +30,13 @@ public class Order {
         this.orderAmount = getTotalAmount() + getDeliveryFee();
         this.payment = getTotalAmount() + getDeliveryFee();
     }
+
+//    @Builder
+//    public Order(Long orderAmount, Long payment, List<OrderDetail> orderDetails) {
+//        this.orderAmount = orderAmount;
+//        this.payment = payment;
+//        this.orderDetails = List.copyOf(orderDetails);
+//    }
 
     public Long getTotalAmount() {
         return orderDetails.stream()

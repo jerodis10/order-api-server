@@ -27,7 +27,8 @@ public class SystemPrinter implements Printer {
         System.out.printf(PRINT_ITEM_FORMAT,
                 OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName, OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
 
-        System.out.println("------------------------------------------------------------------------------------------");
+        System.out.println(LONG_LINE_SEPARATOR);
+//        System.out.println("------------------------------------------------------------------------------------------");
 
         for (Item item : itemList) {
             System.out.printf(PRINT_ITEM_FORMAT,

@@ -18,7 +18,6 @@ public class Application {
 	public static void main(String[] args) {
 		OrderRepository orderRepository = new FileOrderRepository();
 		Printer printer = new SystemPrinter();
-//		Printer printer = new LogPrinter();
 		InputReader inputReader = new InputReader();
 		OrderService orderService = new OrderService(orderRepository, printer, inputReader);
 

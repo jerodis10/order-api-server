@@ -11,6 +11,7 @@ public class NumberUtil {
 
     public static boolean isNumeric(String s) {
         try {
+            s = s.replace(",", "");
             Long.parseLong(s);
         } catch (NumberFormatException e) {
             return false;
