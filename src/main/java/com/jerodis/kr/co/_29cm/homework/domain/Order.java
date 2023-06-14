@@ -31,13 +31,6 @@ public class Order {
         this.payment = getTotalAmount() + getDeliveryFee();
     }
 
-//    @Builder
-//    public Order(Long orderAmount, Long payment, List<OrderDetail> orderDetails) {
-//        this.orderAmount = orderAmount;
-//        this.payment = payment;
-//        this.orderDetails = List.copyOf(orderDetails);
-//    }
-
     public Long getTotalAmount() {
         return orderDetails.stream()
                 .mapToLong(OrderDetail::getAmount)

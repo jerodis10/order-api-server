@@ -1,20 +1,21 @@
-package com.jerodis.kr.co._29cm.homework.service;
+package com.jerodis.kr.co._29cm.homework.common;
 
-//import com.example.demo.exception.InvalidCommandException;
 
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandExceptionStatus;
+import lombok.Getter;
 
+@Getter
 public enum OrderCommand {
     ORDER("order", "o", "주문"),
     QUIT("quit", "q", "종료")
     ;
 
-    public String commandString;
+    private final String commandString;
 
-    public String commandChar;
+    private final String commandChar;
 
-    public String commandWord;
+    private final String commandWord;
 
     OrderCommand(String commandString, String commandChar, String commandWord) {
         this.commandString = commandString;
@@ -23,10 +24,8 @@ public enum OrderCommand {
     }
 
     public static OrderCommand of(String s) {
-        if (OrderCommand.ORDER.commandChar.equals(s)) return ORDER;
-        if (OrderCommand.QUIT.commandChar.equals(s)) return QUIT;
-//        if (s.equals("o")) return ORDER;
-//        if (s.equals("q")) return QUIT;
+        if (OrderCommand.ORDER.commandChar.equals(s) || OrderCommand.ORDER.commandString.equals(s)) return ORDER;
+        if (OrderCommand.QUIT.commandChar.equals(s) || OrderCommand.QUIT.commandString.equals(s)) return QUIT;
         throw new InvalidCommandException(InvalidCommandExceptionStatus.INVALID_COMMAND, s);
     }
 

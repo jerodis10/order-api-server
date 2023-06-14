@@ -2,8 +2,7 @@ package com.jerodis.kr.co._29cm.homework.common;
 
 import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
-import com.jerodis.kr.co._29cm.homework.service.OrderColumn;
-import com.jerodis.kr.co._29cm.homework.service.OrderCommand;
+import com.jerodis.kr.co._29cm.homework.domain.Stock;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -23,25 +22,24 @@ public class LogPrinter implements Printer {
     }
 
     @Override
-    public void print(List<Item> itemList) {
+    public void print(List<Stock> stocks) {
         log.info("{}                    {}                             {}         {}",
-                OrderColumn.ITEM_NO.columnName, OrderColumn.ITEM_NAME.columnName,
-                OrderColumn.AMOUNT.columnName, OrderColumn.QUANTITY.columnName);
+                OrderColumn.ITEM_NO.getColumnName(), OrderColumn.ITEM_NAME.getColumnName(),
+                OrderColumn.AMOUNT.getColumnName(), OrderColumn.QUANTITY.getColumnName());
 
         System.out.println(LONG_LINE_SEPARATOR);
-//        System.out.println("------------------------------------------------------------------------------------------");
 
-        for (Item item : itemList) {
+        for (Stock stock : stocks) {
             log.info("{}     {}               {}         {}",
-                    item.getItemNo(), item.getItemName(), numberFormatter(item.getPrice()), numberFormatter(item.getQuantity()));
+                    stock.getItemNo(), stock.getItemName(), numberFormatter(stock.getPrice()), numberFormatter(stock.getStockQuantity()));
         }
     }
 
     @Override
     public void initInput() {
         log.info("입력({}[{}]: {}, {}[{}]: {}) : ",
-            OrderCommand.ORDER.commandChar, OrderCommand.ORDER.commandString, OrderCommand.ORDER.commandWord,
-            OrderCommand.QUIT.commandChar, OrderCommand.QUIT.commandString, OrderCommand.QUIT.commandWord);
+            OrderCommand.ORDER.getCommandChar(), OrderCommand.ORDER.getCommandString(), OrderCommand.ORDER.getCommandWord(),
+            OrderCommand.QUIT.getCommandWord(), OrderCommand.QUIT.getCommandString(), OrderCommand.QUIT.getCommandWord());
     }
 
     @Override

@@ -23,7 +23,7 @@ repositories {
 dependencies {
 //	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+//	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 //	implementation group: 'com.googlecode.thread-weaver', name: 'threadweaver', version: '0.1'
 //	testImplementation group: 'com.google.code.tempus-fugit', name: 'tempus-fugit', version: '1.1'
@@ -41,44 +41,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-//sonar {
-//	properties {
-//		property "snoar.projectKey", "order"
-//		property "sonar.host.url", "http://localhost:9000"
-////		property "sonar.login", "sqp_4e9cbc56e00005e89583d510a1273af252f58c9f"
-//		property "sonar.token", "sqp_4e9cbc56e00005e89583d510a1273af252f58c9f"
-//	}
-//}
-
-//sonarqube {
-//	properties {
-//		property "snoar.projectKey", "order"
-//		property "sonar.host.url", "http://localhost:9000"
-//		property "sonar.token", "sqp_4e9cbc56e00005e89583d510a1273af252f58c9f"
-//	}
-//}
-
-//sonar {
-//	properties {
-//		property "sonar.host.url", "http://localhost:9000"
-//		property "sonar.token", "sqp_4e9cbc56e00005e89583d510a1273af252f58c9f"
-//		property "sonar.sources", "src"
-//		property "sonar.language", "java"
-//		property "sonar.sourceEncoding", "UTF-8"
-//		property "sonar.profile", "Sonar way"
-//		property "sonar.test.inclusions", "**/*.java"
-//	}
-//}
-
-//sonarqube {
-//	properties {
-//		property "sonar.host.url", "http://localhost:9000"
-//		property "sonar.token", "sqp_4e9cbc56e00005e89583d510a1273af252f58c9f"
-//		property "sonar.sources", "src"
-//		property "sonar.language", "java"
-//		property "sonar.sourceEncoding", "UTF-8"
-//		property "sonar.profile", "Sonar way"
-//		property "sonar.test.inclusions", "**/*Test.java"
-//	}
-//}

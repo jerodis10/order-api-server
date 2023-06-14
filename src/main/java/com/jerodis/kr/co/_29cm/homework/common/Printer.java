@@ -3,6 +3,7 @@ package com.jerodis.kr.co._29cm.homework.common;
 import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
 import com.jerodis.kr.co._29cm.homework.domain.OrderDetail;
+import com.jerodis.kr.co._29cm.homework.domain.Stock;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface Printer {
 
     void println(String s);
 
-    void print(List<Item> itemList);
+    void print(List<Stock> stocks);
 
     void print(Order order);
 
@@ -38,7 +39,6 @@ public interface Printer {
 
         sb.append(LINE_SEPARATOR).append("\n");
         sb.append("지불금액: ").append(numberFormatter(order.getPayment())).append("원").append("\n");
-//        sb.append("지불금액: ").append(numberFormatter(order.getDeliveryFee() + order.getPayment())).append("원").append("\n");
         sb.append(LINE_SEPARATOR).append("\n");
 
         return sb.toString();

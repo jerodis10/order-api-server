@@ -1,5 +1,8 @@
-package com.jerodis.kr.co._29cm.homework.service;
+package com.jerodis.kr.co._29cm.homework.common;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderColumn {
     ITEM_NO("상품번호"),
     ITEM_NAME("상품명"),
@@ -7,7 +10,7 @@ public enum OrderColumn {
     QUANTITY("재고수량")
     ;
 
-    public String columnName;
+    private final String columnName;
 
     OrderColumn(String columnName) {
         this.columnName = columnName;
