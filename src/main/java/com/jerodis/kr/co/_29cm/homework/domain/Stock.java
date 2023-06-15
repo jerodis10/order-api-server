@@ -24,7 +24,7 @@ public class Stock {
     private Long stockQuantity;
 
     @Builder
-    public Stock(@NonNull Long itemNo, String itemName, @NonNull Long price, @NonNull Long stockQuantity) {
+    public Stock(Long itemNo, String itemName, Long price, Long stockQuantity) {
         this.itemNo = itemNo;
         this.itemName = itemName;
         this.price = price;
@@ -66,24 +66,4 @@ public class Stock {
         return stocks;
     }
 
-    public static Stock toStock(String[] line) {
-        String itemName = "";
-        int index = 0;
-
-        for (int i = 1; i < line.length; i++) {
-            if (isNumeric(line[i])) {
-                index = i;
-                break;
-            } else {
-                itemName += line[i];
-            }
-        }
-
-        return Stock.builder()
-                .itemNo(Long.valueOf(line[0]))
-                .itemName(itemName)
-                .price(Long.valueOf(line[index]))
-                .stockQuantity(Long.valueOf(line[index + 1]))
-                .build();
-    }
 }

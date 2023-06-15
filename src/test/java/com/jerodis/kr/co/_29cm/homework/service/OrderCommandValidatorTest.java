@@ -1,7 +1,9 @@
 package com.jerodis.kr.co._29cm.homework.service;
 
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
+import com.jerodis.kr.co._29cm.homework.exception.NoRequestOrderException;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,16 +29,28 @@ class OrderCommandValidatorTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("상품번호에 빈 문자열 입력시 주문 프로그램 종료")
-    void success_whenNullInputItemNo(String inputItemNo) {
-        assertThat(OrderCommandValidator.validateItemNo(inputItemNo)).isFalse();
+    @DisplayName("상품번호에 빈 문자열 입력시 에러 발생")
+    void throwException_whenNullInputItemNo(String inputItemNo) {
+        assertThatThrownBy(() -> OrderCommandValidator.validateItemNo(inputItemNo)).isInstanceOf(NoRequestOrderException.class);
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("수량에 빈 문자열 입력시 주문 프로그램 종료")
-    void success_whenNullInputQuantity(String inputQuantity) {
-        assertThat(OrderCommandValidator.validateQuantity(inputQuantity)).isFalse();
+    @DisplayName("수량에 빈 문자열 입력시 에러 발생")
+    void throwException_whenNullInputQuantity(String inputQuantity) {
+        assertThatThrownBy(() -> OrderCommandValidator.validateQuantity(inputQuantity)).isInstanceOf(NoRequestOrderException.class);
+    }
+
+    @Test
+    @DisplayName("상품번호에 빈 스페이스 입력시 주문 종료")
+    void success_whenWhitespaceItemNo() {
+        assertThat(OrderCommandValidator.validateItemNo(" ")).isFalse();
+    }
+
+    @Test
+    @DisplayName("수량에 빈 스페이스 입력시 주문 종료")
+    void success_whenWhitespaceQuantity() {
+        assertThat(OrderCommandValidator.validateQuantity(" ")).isFalse();
     }
     
 }

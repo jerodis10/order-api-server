@@ -2,24 +2,22 @@ package com.jerodis.kr.co._29cm.homework.service;
 
 import com.jerodis.kr.co._29cm.homework.common.InputReader;
 import com.jerodis.kr.co._29cm.homework.common.Printer;
-import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
 import com.jerodis.kr.co._29cm.homework.domain.OrderDetail;
 import com.jerodis.kr.co._29cm.homework.domain.Stock;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandExceptionStatus;
+import com.jerodis.kr.co._29cm.homework.exception.NoRequestOrderException;
+import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import com.jerodis.kr.co._29cm.homework.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Synchronized;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-//@Validated
 @RequiredArgsConstructor
 public class OrderService {
 
@@ -40,7 +38,6 @@ public class OrderService {
 			if(!OrderCommandValidator.validateItemNo(inputItemNo)) break;
 			Stock findStock = orderRepository.findStockByItemNo(inputItemNo);
 			if(findStock == null) throw new InvalidCommandException(InvalidCommandExceptionStatus.ITEM_NOT_FOUND, inputItemNo);
-//					.orElseThrow(() -> new InvalidCommandException(InvalidCommandExceptionStatus.ITEM_NOT_FOUND, inputItemNo));
 
 			printer.print("수량: ");
 			String inputQuantity = inputReader.read();
@@ -50,19 +47,26 @@ public class OrderService {
 			orderProcess(findStock, orderQuantity, orderMap);
 		}
 
-		return new Order(new ArrayList<>(orderMap.values()));
+		List<OrderDetail> orderDetails = new ArrayList<>(orderMap.values());
+		if(!orderDetails.isEmpty()) return new Order(orderDetails);
+		else throw new NoRequestOrderException("주문한 상품이 존재하지 않습니다.");
 	}
 
 	@Synchronized
 	private void orderProcess(Stock stock, Long orderQuantity, Map<Long, OrderDetail> orderMap) {
 		if (orderMap.containsKey(stock.getItemNo())) {
-			stock.decreaseStock(orderQuantity);
+			if(validateStock(stock, orderQuantity)) stock.decreaseStock(orderQuantity);
 			Long originalOrderQuantity = orderMap.get(stock.getItemNo()).getOrderQuantity();
 			orderMap.put(stock.getItemNo(), new OrderDetail(stock, originalOrderQuantity + orderQuantity));
 		} else {
-			stock.decreaseStock(orderQuantity);
+			if(validateStock(stock, orderQuantity)) stock.decreaseStock(orderQuantity);
 			orderMap.put(stock.getItemNo(), new OrderDetail(stock, orderQuantity));
 		}
+	}
+
+	private boolean validateStock(Stock stock, Long orderQuantity) {
+		if(stock.getStockQuantity() < orderQuantity) throw new SoldOutException("SoldOutException 발생. 상품량이 재고량보다 큽니다.");
+		else return true;
 	}
 
 }

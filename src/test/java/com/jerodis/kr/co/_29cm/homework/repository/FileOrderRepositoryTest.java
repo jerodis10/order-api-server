@@ -1,6 +1,5 @@
 package com.jerodis.kr.co._29cm.homework.repository;
 
-import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Stock;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;

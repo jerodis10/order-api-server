@@ -13,7 +13,7 @@ public class NumberUtil {
         try {
             s = s.replace(",", "");
             Long.parseLong(s);
-        } catch (NumberFormatException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             return false;
         }
         return true;

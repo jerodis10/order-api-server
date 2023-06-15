@@ -4,43 +4,32 @@ import com.jerodis.kr.co._29cm.homework.common.InputReader;
 import com.jerodis.kr.co._29cm.homework.common.OrderCommand;
 import com.jerodis.kr.co._29cm.homework.common.Printer;
 import com.jerodis.kr.co._29cm.homework.common.SystemPrinter;
-import com.jerodis.kr.co._29cm.homework.domain.Item;
+import com.jerodis.kr.co._29cm.homework.event.OrderEventListener;
+import com.jerodis.kr.co._29cm.homework.event.OrderEventPublisher;
 import com.jerodis.kr.co._29cm.homework.exception.CommonException;
 import com.jerodis.kr.co._29cm.homework.exception.InvalidCommandException;
+import com.jerodis.kr.co._29cm.homework.exception.NoRequestOrderException;
 import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
 import com.jerodis.kr.co._29cm.homework.repository.FileOrderRepository;
-import com.jerodis.kr.co._29cm.homework.repository.OrderRepository;
-import com.jerodis.kr.co._29cm.homework.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class Application {
 
 	public static void main(String[] args) {
-		OrderRepository orderRepository = FileOrderRepository.init();
 		Printer printer = new SystemPrinter();
 		InputReader inputReader = new InputReader();
-		OrderService orderService = new OrderService(orderRepository, printer, inputReader);
+		OrderEventListener orderEventListener = new OrderEventListener();
+		OrderEventPublisher orderEventPublisher = new OrderEventPublisher(orderEventListener);
+		FileOrderRepository.init();
 
 		while(true) {
 			try {
 				printer.initInput();
 				OrderCommand orderCommand = OrderCommand.of(inputReader.read());
-				if (orderCommand.equals(OrderCommand.ORDER)) {
-					// 전체 상품 출력
-					printer.print(orderService.getItems());
+				if(!orderEventPublisher.publishEvent(orderCommand)) break;
 
-					// 주문 요청 출력
-					printer.print(orderService.requestOrder());
-
-				} else if (orderCommand.equals(OrderCommand.QUIT)) {
-					printer.println("고객님의 주문에 감사드립니다.");
-					return;
-				}
-			} catch (SoldOutException e) {
+			} catch (SoldOutException | NoRequestOrderException e) {
 				printer.println(e.getMessage());
 			} catch (InvalidCommandException e) {
 				printer.println("InvalidCommandException 발생 : " + e.getMessage() + " -> " + e.getErrorMessage());

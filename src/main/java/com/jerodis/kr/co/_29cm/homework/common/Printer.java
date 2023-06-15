@@ -1,6 +1,5 @@
 package com.jerodis.kr.co._29cm.homework.common;
 
-import com.jerodis.kr.co._29cm.homework.domain.Item;
 import com.jerodis.kr.co._29cm.homework.domain.Order;
 import com.jerodis.kr.co._29cm.homework.domain.OrderDetail;
 import com.jerodis.kr.co._29cm.homework.domain.Stock;
@@ -11,7 +10,7 @@ import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.numberFormatter
 
 public interface Printer {
     static final String LINE_SEPARATOR = "-----------------------------------";
-    static final String LONG_LINE_SEPARATOR = "------------------------------------------------------------------------------------------";
+    static final String LONG_LINE_SEPARATOR = "-------------------------------------------------------------------------------------------------------";
 
     void print(String s);
 
@@ -28,7 +27,7 @@ public interface Printer {
         sb.append("주문 내역: ").append("\n");
         sb.append(LINE_SEPARATOR).append("\n");
         for (OrderDetail orderDetail: order.getOrderDetails()) {
-            sb.append(orderDetail.getItem().toString()).append("\n");
+            sb.append(orderDetail.toString()).append("\n");
         }
 
         sb.append(LINE_SEPARATOR).append("\n");

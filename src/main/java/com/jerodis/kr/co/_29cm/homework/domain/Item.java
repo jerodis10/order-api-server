@@ -1,15 +1,10 @@
 package com.jerodis.kr.co._29cm.homework.domain;
 
-import com.jerodis.kr.co._29cm.homework.exception.SoldOutException;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.jerodis.kr.co._29cm.homework.common.NumberUtil.isNumeric;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
-//@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
 public class Item {
 
 	@NonNull
