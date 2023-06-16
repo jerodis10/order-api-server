@@ -4,6 +4,10 @@ import java.text.DecimalFormat;
 
 public class NumberUtil {
 
+    private NumberUtil() {
+        throw new IllegalStateException("NumberUtil");
+    }
+
     public static String numberFormatter(Long number) {
         DecimalFormat decimalFormat = new DecimalFormat("###,###");
         return decimalFormat.format(number);

@@ -26,7 +26,7 @@ public class LogPrinter implements Printer {
                 OrderColumn.ITEM_NO.getColumnName(), OrderColumn.ITEM_NAME.getColumnName(),
                 OrderColumn.AMOUNT.getColumnName(), OrderColumn.QUANTITY.getColumnName());
 
-        System.out.println(LONG_LINE_SEPARATOR);
+        log.info("a");
 
         for (Stock stock : stocks) {
             log.info("{}     {}               {}         {}",

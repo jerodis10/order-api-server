@@ -2,15 +2,17 @@ package kr.co._29cm.homework.common;
 
 import kr.co._29cm.homework.domain.Order;
 import kr.co._29cm.homework.domain.Stock;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class SystemPrinter implements Printer {
     private static final String PRINT_ITEM_FORMAT = "%-10s %-50s %-20s %s\n";
 
     @Override
     public void print(String s) {
-        System.out.print(s);
+        log.info("a");
     }
 
     @Override

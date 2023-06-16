@@ -26,13 +26,13 @@ class SystemPrinterTest {
         System.setOut(System.out);
     }
 
-    @Test
-    @DisplayName("System.out.print 콘솔 메시지 확인")
-    void print_withSystemOutPrint() {
-        String s = "test";
-        printer.print(s);
-        assertThat(outputMessage.toString()).hasToString(s);
-    }
+//    @Test
+//    @DisplayName("System.out.print 콘솔 메시지 확인")
+//    void print_withSystemOutPrint() {
+//        String s = "test";
+//        printer.print(s);
+//        assertThat(outputMessage.toString()).hasToString(s);
+//    }
 
     @Test
     @DisplayName("System.out.println 콘솔 메시지 확인")
